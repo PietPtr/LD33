@@ -22,6 +22,8 @@ class Spaceship
         Vector2f playerPosition;
 
         Texture* spaceshipTextureptr;
+
+        bool dead = false;
 };
 
 #endif // SPACESHIP_H

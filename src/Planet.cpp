@@ -32,6 +32,11 @@ void Planet::update(Time dt, bool focus)
             velocity.x += velocityAcc;
     }
 
+    int maxVelocity = 100;
+    velocity.x = velocity.x > maxVelocity ? maxVelocity : velocity.x;
+    velocity.x = velocity.x < -maxVelocity?-maxVelocity : velocity.x;
+    velocity.y = velocity.y > maxVelocity ? maxVelocity : velocity.y;
+    velocity.y = velocity.y < -maxVelocity?-maxVelocity : velocity.y;
 
 
     position.x += (double)(velocity.x * speed * dt.asSeconds());
