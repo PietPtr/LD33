@@ -8,10 +8,12 @@ class Spaceship
 {
     public:
         Spaceship(Vector2f position, Vector2f velocity);
-        void update(Time dt, Vector2f planetPos);
+        void update(Time dt, Time totalTime, Vector2f planetPos);
+        void checkDead(Time totalTime);
         void draw(RenderWindow* window);
 
         void setTexture(Texture* ptr) { spaceshipTextureptr = ptr; }
+        bool getFullyDead();
     protected:
     private:
         Vector2f position;
@@ -23,7 +25,8 @@ class Spaceship
 
         Texture* spaceshipTextureptr;
 
-        bool dead = false;
+        int dead = -1;
+        int died = -1;
 };
 
 #endif // SPACESHIP_H

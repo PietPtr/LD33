@@ -17,36 +17,43 @@ Spaceship::Spaceship(Vector2f _position, Vector2f _velocity)
     velocity = _velocity;
 }
 
-void Spaceship::update(Time dt, Vector2f planetPos)
+void Spaceship::update(Time dt, Time totalTime, Vector2f planetPos)
 {
     planetPos += Vector2f(64, 64);
     playerPosition = planetPos;
 
     double m1 = 100000; //spaceship mass
-    double m2 = 1.9e10; //planet mass
+    double m2 = 1e8; //planet mass
     double r = sqrt(std::pow(std::abs(planetPos.x - position.x), 2)+
                     std::pow(std::abs(planetPos.y - position.y), 2));
 
     double Fgrav = G * (m1 * m2 / pow(r, 2));
 
-    if (!dead)
+    if (dead == -1)
     {
         //double diagonal = r;
-        gravitation.x = (Fgrav * (planetPos.x - position.x)) / r;
-        gravitation.y = (Fgrav * (planetPos.y - position.y)) / r;
+        gravitation.x = (Fgrav * (planetPos.x - position.x));
+        gravitation.y = (Fgrav * (planetPos.y - position.y));
 
         velocity += gravitation;
 
-        position.x += velocity.x * dt.asSeconds() * 5;
-        position.y += velocity.y * dt.asSeconds() * 5;
+        position.x += velocity.x * dt.asSeconds() * speed;
+        position.y += velocity.y * dt.asSeconds() * speed;
 
         //std::cout << velocity.x << " " << velocity.y << " " << position.x << " " << position.y << " " <<  "\n";
         //std::cout << r << "\n";
     }
 
-    if (r < 64 || r > 2048)
+    if (r < 64 || r > 2048 || dead > -1)
     {
-        dead = true;
+        if (dead == -1)
+        {
+            died = totalTime.asMilliseconds();
+            std::cout << "dead, r = " << (int)r << "\n";
+        }
+
+        dead = totalTime.asMilliseconds();
+
     }
 }
 
@@ -57,8 +64,10 @@ void Spaceship::draw(RenderWindow* window)
     spaceship.setOrigin(Vector2f(16, 16));
     spaceship.setPosition(getDrawPosition(position, playerPosition));
 
-    if (dead)
-        spaceship.setColor(Color(255, 0, 0));
+    if (dead > -1)
+    {
+        spaceship.setColor(Color(255, 255, 255, 255 - (dead - died) / 10));
+    }
 
     Vector2f up(0, -1);
     double dotProduct = up.x * velocity.x + up.y * velocity.y;
@@ -69,13 +78,11 @@ void Spaceship::draw(RenderWindow* window)
     if (position.x + velocity.x < position.x)
         angle = -angle;
 
-    std::cout << angle << "\n";
-
     spaceship.setRotation(angle);
 
     window->draw(spaceship);
 
-    Vertex grav[] =
+    /*Vertex grav[] =
     {
         Vertex(Vector2f(getDrawPosition(position, playerPosition))),
         Vertex(Vector2f(getDrawPosition(position + Vector2f(gravitation.x * 10, gravitation.y * 10), playerPosition)))
@@ -93,5 +100,17 @@ void Spaceship::draw(RenderWindow* window)
     velo[0].color = Color::Green;
     velo[1].color = Color::Green;
 
-    window->draw(velo, 2, Lines);
+    window->draw(velo, 2, Lines);*/
+}
+
+bool Spaceship::getFullyDead()
+{
+    if (255 - (dead - died) / 10 < 4)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }

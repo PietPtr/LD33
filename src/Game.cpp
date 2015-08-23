@@ -14,7 +14,6 @@ void Game::initialize()
     loadAudio(audioFileNames);
     loadTextures();
     player.setTexture(&planetTexture);
-    testShip.setTexture(&spaceShipTexture);
 }
 
 void Game::update()
@@ -46,7 +45,47 @@ void Game::update()
     totalTime += dt;
 
     player.update(dt, focus);
-    testShip.update(dt, player.getFloatPos());
+
+
+    if (spaceships.size() < 2048 && frame % 1 == 0)
+    {
+        Vector2f newShipPos;
+        switch(randint(0, 3))
+        {
+        case(0):
+            newShipPos = Vector2f(player.getFloatPos().x - windowWidth / 2.0 + randint(-256, 256),
+                                  player.getFloatPos().y - windowWidth / 2.0 + randint(-256, 256));
+            break;
+        case(1):
+            newShipPos = Vector2f(player.getFloatPos().x - windowWidth / 2.0 + randint(-256, 256),
+                                  player.getFloatPos().y + windowWidth / 2.0 + randint(-256, 256));
+            break;
+        case(2):
+            newShipPos = Vector2f(player.getFloatPos().x + windowWidth / 2.0 + randint(-256, 256),
+                                  player.getFloatPos().y + windowWidth / 2.0 + randint(-256, 256));
+            break;
+        case(3):
+            newShipPos = Vector2f(player.getFloatPos().x + windowWidth / 2.0 + randint(-256, 256),
+                                  player.getFloatPos().y - windowWidth / 2.0 + randint(-256, 256));
+            break;
+        }
+        //std::cout << newShipPos.x << " " << newShipPos.y << " " << spaceships.size() << "\n";
+        spaceships.push_back(Spaceship(newShipPos, Vector2f(0, 0)));
+        spaceships.at(spaceships.size() - 1).setTexture(&spaceShipTexture);
+    }
+
+    for (int i = spaceships.size() - 1; i >= 0; i--)
+        {
+            if (spaceships.at(i).getFullyDead())
+            {
+                spaceships.erase(spaceships.begin() + i);
+            }
+        }
+
+    for (int i = 0; i < spaceships.size(); i++)
+    {
+        spaceships[i].update(dt, totalTime, player.getFloatPos());
+    }
 
     if (Keyboard::isKeyPressed(Keyboard::F11))
     {
@@ -75,7 +114,11 @@ void Game::draw()
     test.setPosition(256, 256);
     window->draw(test);*/
     player.draw(window);
-    testShip.draw(window);
+
+    for (int i = 0; i < spaceships.size(); i++)
+    {
+        spaceships[i].draw(window);
+    }
 
     window->display();
 }

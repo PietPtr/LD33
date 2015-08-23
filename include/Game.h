@@ -43,9 +43,10 @@ class Game
         std::vector<std::string> audioFileNames;
 
         Planet player { &planetTexture };
-        Spaceship testShip { Vector2f(-512, -256), Vector2f(0, 0) };
 
         Vector2f viewPos { 0, 0 };
 
         std::vector<Audio*> sfx;
+
+        std::vector<Spaceship> spaceships;
 };
