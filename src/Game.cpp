@@ -47,26 +47,26 @@ void Game::update()
     player.update(dt, focus);
 
 
-    if (spaceships.size() < 2048 && frame % 1 == 0)
+    if (spaceships.size() < 1 && frame % 60 == 0)
     {
         Vector2f newShipPos;
         switch(randint(0, 3))
         {
         case(0):
-            newShipPos = Vector2f(player.getFloatPos().x - windowWidth / 2.0 + randint(-256, 256),
-                                  player.getFloatPos().y - windowWidth / 2.0 + randint(-256, 256));
+            newShipPos = Vector2f(player.getFloatPos().x - windowWidth / 2.0 + randint(-0, 256),
+                                  player.getFloatPos().y - windowHeight / 2.0 + randint(-0, 256));
             break;
         case(1):
-            newShipPos = Vector2f(player.getFloatPos().x - windowWidth / 2.0 + randint(-256, 256),
-                                  player.getFloatPos().y + windowWidth / 2.0 + randint(-256, 256));
+            newShipPos = Vector2f(player.getFloatPos().x - windowWidth / 2.0 + randint(-0, 256),
+                                  player.getFloatPos().y + windowHeight / 2.0 + randint(-0, 256));
             break;
         case(2):
-            newShipPos = Vector2f(player.getFloatPos().x + windowWidth / 2.0 + randint(-256, 256),
-                                  player.getFloatPos().y + windowWidth / 2.0 + randint(-256, 256));
+            newShipPos = Vector2f(player.getFloatPos().x + windowWidth / 2.0 + randint(-0, 256),
+                                  player.getFloatPos().y + windowHeight / 2.0 + randint(-0, 256));
             break;
         case(3):
-            newShipPos = Vector2f(player.getFloatPos().x + windowWidth / 2.0 + randint(-256, 256),
-                                  player.getFloatPos().y - windowWidth / 2.0 + randint(-256, 256));
+            newShipPos = Vector2f(player.getFloatPos().x + windowWidth / 2.0 + randint(-0, 256),
+                                  player.getFloatPos().y - windowHeight / 2.0 + randint(-0, 256));
             break;
         }
         //std::cout << newShipPos.x << " " << newShipPos.y << " " << spaceships.size() << "\n";

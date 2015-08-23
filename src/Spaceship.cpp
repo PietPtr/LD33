@@ -23,7 +23,7 @@ void Spaceship::update(Time dt, Time totalTime, Vector2f planetPos)
     playerPosition = planetPos;
 
     double m1 = 100000; //spaceship mass
-    double m2 = 1e8; //planet mass
+    double m2 = 2e8; //planet mass
     double r = sqrt(std::pow(std::abs(planetPos.x - position.x), 2)+
                     std::pow(std::abs(planetPos.y - position.y), 2));
 
