@@ -4,6 +4,8 @@
 
 using namespace sf;
 
+void drawString(RenderWindow* window, std::string text, Vector2f position, Texture* fontTexture, Color color, int newLine);
+
 Game::Game(RenderWindow* _window)
 {
     window = _window;
@@ -47,7 +49,7 @@ void Game::update()
     player.update(dt, focus);
 
 
-    if (spaceships.size() < 1 && frame % 60 == 0)
+    if (spaceships.size() < 1 && frame % 1 == 0)
     {
         Vector2f newShipPos;
         switch(randint(0, 3))
@@ -82,7 +84,7 @@ void Game::update()
             if (spaceships.at(i).getFullyDead() == 1)
                 health -= 34;
             else if (spaceships.at(i).getFullyDead() == 2)
-                points += 100;
+                points += 1;
 
             spaceships.erase(spaceships.begin() + i);
         }
@@ -127,6 +129,9 @@ void Game::draw()
     {
         spaceships[i].draw(window, windowWidth, windowHeight);
     }
+
+    drawString(window, "SHIPS FLUNG INTO DEEP SPACE: " + std::to_string(points), Vector2f(-windowWidth / 2.0, -windowHeight / 2.0 + 3), &fontTexture, Color(0, 200, 0), 100);
+    drawString(window, "PLANET HEALTH: " + std::to_string(health), Vector2f(-windowWidth / 2.0, -windowHeight / 2.0 + 13), &fontTexture, Color(0, 200, 0), 100);
 
     window->display();
 }
@@ -173,6 +178,8 @@ void Game::loadTextures()
     if (!starTexture.loadFromFile("textures/stars.png"))
         window->close();
     if (!pointerTexture.loadFromFile("textures/pointer.png"))
+        window->close();
+    if (!fontTexture.loadFromFile("textures/font.png"))
         window->close();
 }
 

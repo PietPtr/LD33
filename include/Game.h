@@ -40,6 +40,7 @@ class Game
         Texture spaceShipTexture;
         Texture starTexture;
         Texture pointerTexture;
+        Texture fontTexture;
 
         std::vector<std::string> audioFileNames;
 
