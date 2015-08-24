@@ -15,7 +15,7 @@ void Game::initialize()
 {
     loadAudio(audioFileNames);
     loadTextures();
-    player.setTexture(&planetTexture);
+    player.setTexture(&planetTexture, &brokenPlanetTexture);
 }
 
 void Game::update()
@@ -46,7 +46,10 @@ void Game::update()
     dt = clock.restart();
     totalTime += dt;
 
-    player.update(dt, focus);
+    if (!gameover)
+        player.update(dt, focus);
+    else
+        player.update(dt, false);
 
 
     if (spaceships.size() < 1 && frame % 1 == 0)
@@ -82,12 +85,18 @@ void Game::update()
         {
 
             if (spaceships.at(i).getFullyDead() == 1)
-                health -= 34;
+                health -= 20;
             else if (spaceships.at(i).getFullyDead() == 2)
                 points += 1;
 
             spaceships.erase(spaceships.begin() + i);
         }
+    }
+
+    if (health <= 0)
+    {
+        gameover = true;
+        health = 0;
     }
 
     for (int i = 0; i < spaceships.size(); i++)
@@ -117,13 +126,7 @@ void Game::draw()
 
     window->setView(view);
 
-    /*Sprite test;
-    test.setTexture(planetTexture);
-    test.setOrigin(128, 128);
-    test.setRotation(frame);
-    test.setPosition(256, 256);
-    window->draw(test);*/
-    player.draw(window);
+    player.draw(window, gameover);
 
     for (int i = 0; i < spaceships.size(); i++)
     {
@@ -132,6 +135,14 @@ void Game::draw()
 
     drawString(window, "SHIPS FLUNG INTO DEEP SPACE: " + std::to_string(points), Vector2f(-windowWidth / 2.0, -windowHeight / 2.0 + 3), &fontTexture, Color(0, 200, 0), 100);
     drawString(window, "PLANET HEALTH: " + std::to_string(health), Vector2f(-windowWidth / 2.0, -windowHeight / 2.0 + 13), &fontTexture, Color(0, 200, 0), 100);
+
+    if (gameover)
+    {
+        for (int i = 0; i < 16; i++)
+        {
+            drawString(window, "GAMEOVER", Vector2f(-24, 72 + i * 9), &fontTexture, Color(0, 200, 0), 100);
+        }
+    }
 
     window->display();
 }
@@ -177,7 +188,7 @@ void Game::loadTextures()
         window->close();
     if (!starTexture.loadFromFile("textures/stars.png"))
         window->close();
-    if (!pointerTexture.loadFromFile("textures/pointer.png"))
+    if (!brokenPlanetTexture.loadFromFile("textures/brokenplanet.png"))
         window->close();
     if (!fontTexture.loadFromFile("textures/font.png"))
         window->close();

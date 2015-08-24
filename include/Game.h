@@ -37,12 +37,15 @@ class Game
         int frame = 0;
 
         Texture planetTexture;
+        Texture brokenPlanetTexture;
         Texture spaceShipTexture;
         Texture starTexture;
         Texture pointerTexture;
         Texture fontTexture;
 
         std::vector<std::string> audioFileNames;
+
+        bool gameover = false;
 
         Planet player { &planetTexture };
         int health = 100;

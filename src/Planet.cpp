@@ -45,10 +45,13 @@ void Planet::update(Time dt, bool focus)
     //std::cout << velocity.x << " " << velocity.y << " " << position.x << " " << position.y << " " <<  "\n";
 }
 
-void Planet::draw(RenderWindow* window)
+void Planet::draw(RenderWindow* window, bool gameover)
 {
     Sprite planet;
-    planet.setTexture(*planetTextureptr);
+    if (gameover)
+        planet.setTexture(*brokenPlanetTexture);
+    else
+        planet.setTexture(*planetTextureptr);
     planet.setOrigin(64, 64);
 
     window->draw(planet);
