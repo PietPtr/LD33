@@ -71,16 +71,22 @@ void Game::update()
         }
         //std::cout << newShipPos.x << " " << newShipPos.y << " " << spaceships.size() << "\n";
         spaceships.push_back(Spaceship(newShipPos, Vector2f(0, 0)));
-        spaceships.at(spaceships.size() - 1).setTexture(&spaceShipTexture);
+        spaceships.at(spaceships.size() - 1).setTexture(&spaceShipTexture, &pointerTexture);
     }
 
     for (int i = spaceships.size() - 1; i >= 0; i--)
+    {
+        if (spaceships.at(i).getFullyDead() != ALIVE)
         {
-            if (spaceships.at(i).getFullyDead())
-            {
-                spaceships.erase(spaceships.begin() + i);
-            }
+
+            if (spaceships.at(i).getFullyDead() == 1)
+                health -= 34;
+            else if (spaceships.at(i).getFullyDead() == 2)
+                points += 100;
+
+            spaceships.erase(spaceships.begin() + i);
         }
+    }
 
     for (int i = 0; i < spaceships.size(); i++)
     {
@@ -92,6 +98,8 @@ void Game::update()
         Image Screen = window->capture();
         Screen.saveToFile("screenshot.png");
     }
+
+    //std::cout << "Points: " << points << ", Health: " << health << "\n";
 
     frame++;
 }
@@ -117,7 +125,7 @@ void Game::draw()
 
     for (int i = 0; i < spaceships.size(); i++)
     {
-        spaceships[i].draw(window);
+        spaceships[i].draw(window, windowWidth, windowHeight);
     }
 
     window->display();
@@ -163,6 +171,8 @@ void Game::loadTextures()
     if (!spaceShipTexture.loadFromFile("textures/spaceship.png"))
         window->close();
     if (!starTexture.loadFromFile("textures/stars.png"))
+        window->close();
+    if (!pointerTexture.loadFromFile("textures/pointer.png"))
         window->close();
 }
 

@@ -39,10 +39,13 @@ class Game
         Texture planetTexture;
         Texture spaceShipTexture;
         Texture starTexture;
+        Texture pointerTexture;
 
         std::vector<std::string> audioFileNames;
 
         Planet player { &planetTexture };
+        int health = 100;
+        int points = 0;
 
         Vector2f viewPos { 0, 0 };
 

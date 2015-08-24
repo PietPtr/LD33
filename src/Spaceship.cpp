@@ -24,7 +24,7 @@ void Spaceship::update(Time dt, Time totalTime, Vector2f planetPos)
 
     double m1 = 100000; //spaceship mass
     double m2 = 2e8; //planet mass
-    double r = sqrt(std::pow(std::abs(planetPos.x - position.x), 2)+
+    r = sqrt(std::pow(std::abs(planetPos.x - position.x), 2)+
                     std::pow(std::abs(planetPos.y - position.y), 2));
 
     double Fgrav = G * (m1 * m2 / pow(r, 2));
@@ -49,7 +49,13 @@ void Spaceship::update(Time dt, Time totalTime, Vector2f planetPos)
         if (dead == -1)
         {
             died = totalTime.asMilliseconds();
-            std::cout << "dead, r = " << (int)r << "\n";
+            if (deathCause == ALIVE)
+            {
+                if (r < 64)
+                    deathCause = COLLISION;
+                else if (r > 2048)
+                    deathCause = DEEPSPACE;
+            }
         }
 
         dead = totalTime.asMilliseconds();
@@ -57,7 +63,7 @@ void Spaceship::update(Time dt, Time totalTime, Vector2f planetPos)
     }
 }
 
-void Spaceship::draw(RenderWindow* window)
+void Spaceship::draw(RenderWindow* window, int windowWidth, int windowHeight)
 {
     Sprite spaceship;
     spaceship.setTexture(*spaceshipTextureptr);
@@ -82,17 +88,24 @@ void Spaceship::draw(RenderWindow* window)
 
     window->draw(spaceship);
 
-    /*Vertex grav[] =
+    int length = 48;
+    int distance = 256;
+
+    if (r > distance + length)
     {
-        Vertex(Vector2f(getDrawPosition(position, playerPosition))),
-        Vertex(Vector2f(getDrawPosition(position + Vector2f(gravitation.x * 10, gravitation.y * 10), playerPosition)))
-    };
-    grav[0].color = Color::Red;
-    grav[1].color = Color::Red;
+        Vertex grav[] =
+        {
+            Vertex(Vector2f((distance) * -normalize(gravitation).x, (distance) * -normalize(gravitation).y)),
+            Vertex(Vector2f((length + distance) * -normalize(gravitation).x, (length + distance) * -normalize(gravitation).y))
+        };
+        grav[0].color = Color(0, 200, 0, 255 - 255 * (r / 2048));
+        grav[1].color = Color(0, 200, 0, 255 - 255 * (r / 2048));
 
-    window->draw(grav, 2, Lines);
+        window->draw(grav, 2, Lines);
+    }
 
-    Vertex velo[] =
+
+    /*Vertex velo[] =
     {
         Vertex(Vector2f(getDrawPosition(position, playerPosition))),
         Vertex(Vector2f(getDrawPosition(position + Vector2f(velocity.x, velocity.y), playerPosition)))
@@ -103,14 +116,3 @@ void Spaceship::draw(RenderWindow* window)
     window->draw(velo, 2, Lines);*/
 }
 
-bool Spaceship::getFullyDead()
-{
-    if (255 - (dead - died) / 10 < 4)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
